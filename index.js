@@ -8,7 +8,9 @@ async function getUsername() {
             name: "username"
         });
 
-        console.log(username);
+        const { data } = await axios.get(
+            `http://api.github.com/users/${username}`
+        );
     }
     catch (err) {
         console.log(err);
@@ -16,14 +18,3 @@ async function getUsername() {
 }
 
 getUsername();
-
-// inquirer
-// .prompt(
-//     {
-//         message: "Enter GitHub username:",
-//         name: "username"
-//     }
-// )
-// .then( { username } => {
-//     console.log(username);
-// });
