@@ -27,22 +27,65 @@ function buildPDF(user) {
     const doc = new PDFDocument;
     doc.pipe(fs.createWriteStream(`${user.name.replace(/ /g, "_")}.pdf`));
 
-    //add content here
+    //background
     doc.rect(0, 0, 612, 792)
     .fill("blue");
-    doc.roundedRect(310, 425, 315, 180, 12)
+    //links card
+    doc.roundedRect(260, 425, 325, 205, 12)
     .lineWidth(2)
     .fillAndStroke("white", "#060666");
+    //links text
+    doc.font("./assets/fonts/Amble-Regular.ttf");
+    doc.fontSize(18);
+    doc.fillColor("black")
+    .text("Links", 297, 450, {
+        width: 263,
+        height: 130,
+        align: "center",
+    })
+    .moveDown()
+    .fontSize(14)
+    .text("GitHub:", {
+        align: "left",
+    })
+    .fontSize(10)
+    .fillColor("blue")
+    .text(user.html_url.trim(), {
+        link: user.html_url.trim()
+    })
+    .moveDown()
+    .fontSize(14)
+    .fillColor("black")
+    .text("Blog:")
+    .fontSize(10)
+    .fillColor("blue")
+    .text(user.blog.trim(), {
+        link: user.blog.trim()
+    })
+    .moveDown()
+    .fontSize(14)
+    .fillColor("black")
+    .text("Location:")
+    .fontSize(10)
+    .fillColor("blue")
+    .text(user.location.trim(), {
+        link: `https://www.google.com/maps/place/${user.location.trim()}`
+    });
+
+    //vertical banner
     doc.rect(50, -5, 220, 802)
     .lineWidth(5)
     .fillAndStroke("white", "#060666");
-    doc.roundedRect(20, 30, 562, 75, 4)
+    //name banner shadow
+    doc.roundedRect(30, 30, 552, 75, 4)
     .fillOpacity(0.5)
     .fill("black");
+    //name banner
     doc.roundedRect(25, 25, 562, 75, 2)
     .lineWidth(2)
     .fillOpacity(1)
     .fillAndStroke("white", "#060666");
+    //name text
     doc.fontSize(45);
     doc.fillColor("black")
     .text(user.name, 50, 40, {
@@ -50,6 +93,7 @@ function buildPDF(user) {
         height: 45,
         align: "center"
     });
+    //GitHub stats text
     doc.fontSize(28)
     .text("GitHub Stats", 65, 400, {
         width: 190,
@@ -67,10 +111,11 @@ function buildPDF(user) {
     .text(`Following: ${user.following}`)
     .moveDown()
     .text(`Stars: All Em!`);
-
+    //bio card
     doc.roundedRect(310, 145, 275, 210, 12)
     .lineWidth(2)
     .fillAndStroke("white", "#060666");
+    //bio text
     doc.fontSize(18)
     .fillColor("black")
     .text(user.bio, 335, 170, {
@@ -79,12 +124,21 @@ function buildPDF(user) {
         align: "left",
         oblique: 10
     });
-
-
-    doc.roundedRect(35, 125, 250, 250, 18).clip();
-    doc.image("profilepic.jpg", 35, 125, {fit: [250, 250], align: "center", valign: "center"});
-    doc.roundedRect(35, 125, 250, 250, 18)
-    .lineWidth(10)
+    //image shadow
+    doc.roundedRect(40, 130, 240, 250, 15)
+    .fillOpacity(0.5)
+    .fill("black");
+    //image
+    doc.roundedRect(35, 125, 250, 250, 12).clip();
+    doc.fillOpacity(1)
+    .image("profilepic.jpg", 35, 125, {
+        fit: [250, 250],
+        align: "center",
+        valign: "center"
+    });
+    //image border
+    doc.roundedRect(35, 125, 250, 250, 12)
+    .lineWidth(6)
     .stroke("#060666");
     doc.end();
 }
