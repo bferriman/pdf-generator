@@ -60,7 +60,7 @@ function buildPDF(data) {
     //links card
     doc.roundedRect(260, 425, 325, 205, 12)
     .lineWidth(2)
-    .fillAndStroke("white", "#060666");
+    .fillAndStroke("white", "#222222");
     //links text
     doc.font("./assets/fonts/Amble-Regular.ttf");
     doc.fontSize(18);
@@ -102,7 +102,7 @@ function buildPDF(data) {
     //vertical banner
     doc.rect(50, -5, 220, 802)
     .lineWidth(5)
-    .fillAndStroke("white", "#060666");
+    .fillAndStroke("white", "#222222");
     //name banner shadow
     doc.roundedRect(30, 30, 552, 75, 4)
     .fillOpacity(0.5)
@@ -111,7 +111,7 @@ function buildPDF(data) {
     doc.roundedRect(25, 25, 562, 75, 2)
     .lineWidth(2)
     .fillOpacity(1)
-    .fillAndStroke("white", "#060666");
+    .fillAndStroke("white", "#222222");
     //name text
     doc.fontSize(45);
     doc.fillColor("black")
@@ -141,7 +141,7 @@ function buildPDF(data) {
     //bio card
     doc.roundedRect(310, 145, 275, 210, 12)
     .lineWidth(2)
-    .fillAndStroke("white", "#060666");
+    .fillAndStroke("white", "#222222");
     //bio text
     doc.fontSize(18)
     .fillColor("black")
@@ -168,7 +168,7 @@ function buildPDF(data) {
     //image border
     doc.roundedRect(35, 125, 250, 250, 12)
     .lineWidth(6)
-    .stroke("#060666");
+    .stroke("#222222");
     doc.end();
 }
 
