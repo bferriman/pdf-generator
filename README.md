@@ -7,6 +7,7 @@ This is a Node application that prompts the user for a GitHub username and a col
 ## Usage
 
 After cloning the repo, run `npm install` to install dependencies.
+
 Run `node index.js` to execute the app.
 
 ## Opportunities for Further Development
@@ -20,7 +21,9 @@ Similarly, I'd like to add an option to accept a csv file (or similar) that cont
 ## Credits
 
 Using the "Amble" font by Punchcut on fontsquirrel.com
+
 Using the following npm packages:
+
 fs
 axios
 inquirer
