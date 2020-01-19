@@ -10,26 +10,53 @@ async function main() {
             name: "username"
         });
 
+        const { color } = await inquirer.prompt({
+            message: "Background color:",
+            name: "color"
+        });
+
         const { data } = await axios.get(
             `http://api.github.com/users/${username}`
         );
 
-        buildPDF(data);
+        const starred = await axios.get(`https://api.github.com/users/${username}/starred`);
+
+        const buf = axios({
+            method: 'get',
+            url: data.avatar_url,
+            responseType: 'arraybuffer'
+        })
+        .then(response => {
+            const buf = Buffer.from(response.data, "binary");
+            const passedData = {
+                name: data.name,
+                html_url: data.html_url,
+                blog: data.blog,
+                location: data.location,
+                public_repos: data.public_repos,
+                followers: data.followers,
+                following: data.following,
+                stars: starred.data.length,
+                bio: data.bio,
+                bgColor: color,
+                imgBuffer: buf
+            }
+            buildPDF(passedData);
+        });
     }
     catch (err) {
         console.log(err);
     }
 }
 
-const dummyStr = "Well I guess I'm going to come in here and type a bunch of text just to see if anything happens and if I don't quite type enough text to match the lorem ipsum text in the example I guess that's ok but I'll keep typing for a bit just to see if I can get close.";
+function buildPDF(data) {
 
-function buildPDF(user) {
     const doc = new PDFDocument;
-    doc.pipe(fs.createWriteStream(`${user.name.replace(/ /g, "_")}.pdf`));
+    doc.pipe(fs.createWriteStream(`${data.name.replace(/ /g, "_")}.pdf`));
 
     //background
     doc.rect(0, 0, 612, 792)
-    .fill("blue");
+    .fill(data.bgColor);
     //links card
     doc.roundedRect(260, 425, 325, 205, 12)
     .lineWidth(2)
@@ -50,8 +77,8 @@ function buildPDF(user) {
     })
     .fontSize(10)
     .fillColor("blue")
-    .text(user.html_url.trim(), {
-        link: user.html_url.trim()
+    .text(data.html_url.trim(), {
+        link: data.html_url.trim()
     })
     .moveDown()
     .fontSize(14)
@@ -59,8 +86,8 @@ function buildPDF(user) {
     .text("Blog:")
     .fontSize(10)
     .fillColor("blue")
-    .text(user.blog.trim(), {
-        link: user.blog.trim()
+    .text(data.blog.trim(), {
+        link: data.blog.trim()
     })
     .moveDown()
     .fontSize(14)
@@ -68,8 +95,8 @@ function buildPDF(user) {
     .text("Location:")
     .fontSize(10)
     .fillColor("blue")
-    .text(user.location.trim(), {
-        link: `https://www.google.com/maps/place/${user.location.trim()}`
+    .text(data.location.trim(), {
+        link: `https://www.google.com/maps/place/${data.location.trim()}`
     });
 
     //vertical banner
@@ -88,7 +115,7 @@ function buildPDF(user) {
     //name text
     doc.fontSize(45);
     doc.fillColor("black")
-    .text(user.name, 50, 40, {
+    .text(data.name, 50, 40, {
         width: 512,
         height: 45,
         align: "center"
@@ -102,15 +129,15 @@ function buildPDF(user) {
     })
     .fontSize(20)
     .moveDown()
-    .text(`Public Repos: ${user.public_repos}`, {
+    .text(`Public Repos: ${data.public_repos}`, {
         align: "left"
     })
     .moveDown()
-    .text(`Followers: ${user.followers}`)
+    .text(`Followers: ${data.followers}`)
     .moveDown()
-    .text(`Following: ${user.following}`)
+    .text(`Following: ${data.following}`)
     .moveDown()
-    .text(`Stars: All Em!`);
+    .text(`Stars: ${data.stars}`);
     //bio card
     doc.roundedRect(310, 145, 275, 210, 12)
     .lineWidth(2)
@@ -118,7 +145,7 @@ function buildPDF(user) {
     //bio text
     doc.fontSize(18)
     .fillColor("black")
-    .text(user.bio, 335, 170, {
+    .text(data.bio, 335, 170, {
         width: 225,
         height: 160,
         align: "left",
@@ -128,10 +155,12 @@ function buildPDF(user) {
     doc.roundedRect(40, 130, 240, 250, 15)
     .fillOpacity(0.5)
     .fill("black");
+
+
     //image
     doc.roundedRect(35, 125, 250, 250, 12).clip();
     doc.fillOpacity(1)
-    .image("profilepic.jpg", 35, 125, {
+    .image(data.imgBuffer, 35, 125, {
         fit: [250, 250],
         align: "center",
         valign: "center"
